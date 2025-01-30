@@ -1,0 +1,57 @@
+name: Infra - Production
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "aws/opentofu/**"
+      - ".github/workflows/infra.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "aws/opentofu/**"
+      - ".github/workflows/infra.yml"
+
+env:
+  TOFU_VERSION: 1.9.0
+
+jobs:
+  infra_up:
+    name: Infra - Up
+    runs-on: ubuntu-22.04
+    environment: production
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: aws/opentofu
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configura aws ecr
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ vars.AWS_US_REGION }}
+
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ env.TOFU_VERSION }}
+
+      - name: Cria main.tf
+        run: |
+          mv main.tf.modelo main.tf
+          sed -i "s|<AWS_BUCKET_STATE_NAME>|${{ vars.AWS_BUCKET_STATE_NAME }}|g" main.tf
+          sed -i "s|<AWS_US_REGION>|${{ vars.AWS_US_REGION }}|g" main.tf
+
+      - run: tofu init
+
+      - run: tofu validate
+
+      - if: github.event_name == 'pull_request'
+        run: tofu plan
+
+      - if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: tofu apply -auto-approve
