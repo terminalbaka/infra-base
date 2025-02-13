@@ -57,4 +57,8 @@ jobs:
 
       - run: tofu validate
 
-      - run: tofu plan
+      - if: github.event_name == 'pull_request'
+        run: tofu plan
+
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: tofu apply --auto-approve
