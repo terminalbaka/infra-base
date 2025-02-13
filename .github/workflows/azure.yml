@@ -49,10 +49,6 @@ jobs:
           tenant_id = "${{ secrets.AZURE_TENANT_ID }}"
           EOF
 
-      - uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - run: tofu init
 
       - run: tofu validate
