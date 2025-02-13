@@ -40,7 +40,7 @@ variable "postgres_sku_name" {
 variable "postgres_storage_mb" {
   type        = number
   description = "Tamanho do storage em MB"
-  default     = 5120 # 5GB
+  default     = 32768 # 32GB
 }
 
 variable "postgres_version" {
