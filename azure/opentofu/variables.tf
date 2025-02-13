@@ -17,6 +17,7 @@ variable "postgres_server_name" {
 variable "postgres_admin_username" {
   type        = string
   description = "Nome do usuário administrador do PostgreSQL"
+  sensitive = true
 }
 
 variable "postgres_admin_password" {
@@ -33,7 +34,7 @@ variable "my_ip_address" {
 variable "postgres_sku_name" {
   type        = string
   description = "SKU do servidor PostgreSQL"
-  default     = "B_Standard_B1ms"  # Tier básico para ambiente de desenvolvimento
+  default     = "B_Standard_B1ms"
 }
 
 variable "postgres_storage_mb" {
@@ -51,4 +52,15 @@ variable "postgres_version" {
 variable "subscription_id" {
   type        = string
   description = "ID da subscription da Azure"
-} 
+  sensitive   = true
+}
+
+variable "location_eastus" {
+  type = string
+  default = "eastus"
+}
+
+variable "location_eastus2" {
+  type = string
+  default = "eastus2"
+}

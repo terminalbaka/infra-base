@@ -1,17 +1,17 @@
 # Resource Group
 resource "azurerm_resource_group" "main" {
   name     = "intelligence"
-  location = "eastus"  # ou a região desejada
+  location = var.location_eastus
 }
 
-# Servidor PostgreSQL Flexible
 resource "azurerm_postgresql_flexible_server" "main" {
   name                = var.postgres_server_name
-  location            = var.location
+  location            = var.location_eastus2
   resource_group_name = azurerm_resource_group.main.name
 
   administrator_login    = var.postgres_admin_username
   administrator_password = var.postgres_admin_password
+  zone = 1
 
   sku_name = var.postgres_sku_name
   version  = var.postgres_version
@@ -26,7 +26,6 @@ resource "azurerm_postgresql_flexible_server" "main" {
   depends_on = [azurerm_resource_group.main]
 }
 
-# Regra de firewall para seu IP
 resource "azurerm_postgresql_flexible_server_firewall_rule" "my_ip" {
   name                = "allow-my-ip"
   server_id = azurerm_postgresql_flexible_server.main.id
@@ -36,4 +35,4 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "my_ip" {
   depends_on = [
     azurerm_postgresql_flexible_server.main
   ]
-} 
+}
