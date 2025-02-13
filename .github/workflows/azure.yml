@@ -1,0 +1,64 @@
+name: Azure - Production
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "azure/opentofu/**"
+      - ".github/workflows/azure.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "azure/opentofu/**"
+      - ".github/workflows/azure.yml"
+
+env:
+  TOFU_VERSION: 1.9.0
+  POSTGRES_SERVER_NAME: postgres-teste
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+jobs:
+  infra_up:
+    name: Infra - Up
+    runs-on: ubuntu-22.04
+    environment: production
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: azure/opentofu
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: ${{ env.TOFU_VERSION }}
+
+      - name: Cria terraform.tfvars
+        run: |
+          cat >terraform.tfvars<<EOF
+          resource_group_name      = "terminalBaka"
+          location                = "eastus2"
+          postgres_server_name    = "${{ env.POSTGRES_SERVER_NAME }}"
+          postgres_admin_username = "${{ secrets.AZURE_DB_USER }}"
+          postgres_admin_password = "${{ secrets.AZURE_DB_PASSWORD }}"
+          my_ip_address          = "189.27.104.134"
+          subscription_id = "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+          client_id = "${{ secrets.AZURE_CLIENT_ID }}"
+          client_secret = "${{ secrets.AZURE_CLIENT_SECRET }}"
+          tenant_id = "${{ secrets.AZURE_TENANT_ID }}"
+          EOF
+
+      - run: tofu init
+
+      - run: tofu validate
+
+      - if: github.event_name == 'pull_request'
+        run: tofu plan
+
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: tofu apply --auto-approve
