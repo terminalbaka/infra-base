@@ -1,4 +1,4 @@
-resource "cloudflare_dns_record" "infra_aws_certificate_validation" {
+resource "cloudflare_dns_record" "infra_dns_record" {
   for_each = local.domain-records
   zone_id = each.value.zone_id
   name = each.value.name
