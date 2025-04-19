@@ -1,5 +1,5 @@
 module "infra_dns_record" {
-  source = "github.com/terminalbaka/terraform-modules//modules/cloudflare/dns-record?ref=v1.0.2"
+  source = "github.com/terminalbaka/terraform-modules//modules/cloudflare/dns-record?ref=1.0.2"
   for_each = local.domain-records
   zone_id = each.value.zone_id
   name = each.value.name
