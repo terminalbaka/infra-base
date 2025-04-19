@@ -40,6 +40,10 @@ jobs:
         with:
           tofu_version: ${{ env.TOFU_VERSION }}
 
+      - name: Configura credencial http no git para terraform
+        run: |
+          git config --global url."https://${{ secrets.TERRAFORM_MODULES }}@github.com".insteadOf "https://github.com"
+
       - name: Cria main.tf
         run: |
           mv main.tf.modelo main.tf
