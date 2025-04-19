@@ -1,9 +1,5 @@
-moved {
-  from = cloudflare_dns_record.infra_aws_certificate_validation
-  to = cloudflare_dns_record.infra_dns_record
-}
-
-resource "cloudflare_dns_record" "infra_dns_record" {
+module "infra_dns_record" {
+  source = "github.com/terminalbaka/terraform-modules//modules/cloudflare/dns-record?ref=1.0.2"
   for_each = local.domain-records
   zone_id = each.value.zone_id
   name = each.value.name
