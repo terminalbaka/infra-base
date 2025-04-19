@@ -1,8 +1,3 @@
-moved {
-  from = cloudflare_dns_record.infra_dns_record
-  to = module.infra_dns_record
-}
-
 module "infra_dns_record" {
   source = "github.com/terminalbaka/terraform-modules//modules/cloudflare/dns-record?ref=1.0.2"
   for_each = local.domain-records
