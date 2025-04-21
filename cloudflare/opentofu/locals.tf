@@ -7,5 +7,6 @@ locals {
 
     # TXT records
     txt_github_pages_terminalbaka = { zone_id = var.zoneIdTerminalbaka, name = "_github-pages-challenge-terminalbaka.site", content = "\"cd5e254f847943a3410bf75809eafd\"", type = "TXT", ttl = 1, proxied = false, comment = "GitHub Pages - Terminalbaka" }
+    txt_zoho_mail_terminalbaka = { zone_id = var.zoneIdTerminalbaka, name = "@", content = "\"zoho-verification=zb95611783.zmverify.zoho.com\"", type = "TXT", ttl = 1, proxied = false, comment = "GitHub Pages - Terminalbaka" }
   }
 }
