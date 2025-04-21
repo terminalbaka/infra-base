@@ -8,4 +8,5 @@ module "infra_dns_record" {
   ttl = each.value.ttl
   proxied = each.value.proxied
   comment = each.value.comment
+  priority = lookup(each.value, "priority", null)
 }
