@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "mf_s3_full_access_policy_doc" {
       "s3:ListBucket",
     ]
     resources = [
-      aws_s3_bucket.bucket.arn,
+      aws_s3_bucket.mf_bucket_state.arn,
     ]
   }
   statement {
@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "mf_s3_full_access_policy_doc" {
 resource "aws_iam_policy" "s3_full_access_policy" {
   name        = "S3FullAccessPolicy-${aws_s3_bucket.mf_bucket_state.id}"
   description = "Política que concede acesso total a um bucket S3 específico."
-  policy      = data.aws_iam_policy_document.s3_full_access_policy_doc.json
+  policy      = data.aws_iam_policy_document.mf_s3_full_access_policy_doc.json
 
   depends_on = [
     aws_s3_bucket.mf_bucket_state,
